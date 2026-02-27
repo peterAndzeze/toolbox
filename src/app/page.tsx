@@ -106,6 +106,34 @@ const tools = [
     href: "/tools/number-base",
     color: "from-cyan-500 to-blue-600",
   },
+  {
+    name: "Cron 表达式",
+    description: "解析 Cron 表达式，查看中文说明和执行时间",
+    icon: "⏰",
+    href: "/tools/cron-parser",
+    color: "from-violet-500 to-indigo-600",
+  },
+  {
+    name: "PDF 工具箱",
+    description: "PDF 合并、拆分、信息提取，本地处理",
+    icon: "📄",
+    href: "/tools/pdf-tools",
+    color: "from-red-500 to-orange-600",
+  },
+  {
+    name: "假文生成器",
+    description: "生成中英文 Lorem Ipsum 假文，用于排版测试",
+    icon: "T",
+    href: "/tools/lorem-generator",
+    color: "from-lime-500 to-green-600",
+  },
+  {
+    name: "CSS 单位转换",
+    description: "px、rem、em、vw、pt 等 CSS 单位互转",
+    icon: "px",
+    href: "/tools/css-unit",
+    color: "from-rose-500 to-pink-600",
+  },
 ];
 
 export default function Home() {

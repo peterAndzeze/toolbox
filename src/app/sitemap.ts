@@ -19,6 +19,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tools/hash-generator",
     "/tools/regex-tester",
     "/tools/number-base",
+    "/tools/cron-parser",
+    "/tools/pdf-tools",
+    "/tools/lorem-generator",
+    "/tools/css-unit",
   ];
 
   return [
