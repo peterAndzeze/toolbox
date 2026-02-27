@@ -22,6 +22,7 @@ export const categories: Category[] = [
   { id: "generator", name: "生成器", icon: "⚡", color: "from-pink-500 to-rose-600" },
   { id: "media", name: "图片与文件", icon: "🖼", color: "from-cyan-500 to-blue-600" },
   { id: "dev", name: "开发辅助", icon: "🛠", color: "from-slate-500 to-zinc-600" },
+  { id: "cheatsheet", name: "技术速查", icon: "📖", color: "from-amber-500 to-orange-600" },
 ];
 
 export const tools: Tool[] = [
@@ -66,6 +67,13 @@ export const tools: Tool[] = [
   { name: "正则表达式测试", description: "实时测试正则表达式，高亮匹配结果，内置预设", icon: ".*", href: "/tools/regex-tester", color: "from-fuchsia-500 to-purple-600", category: "dev" },
   { name: "Cron 表达式", description: "解析 Cron 表达式，查看中文说明和执行时间", icon: "⏰", href: "/tools/cron-parser", color: "from-violet-500 to-indigo-600", category: "dev" },
   { name: "设备信息检测", description: "检测屏幕分辨率、浏览器信息、硬件配置", icon: "📱", href: "/tools/device-info", color: "from-indigo-500 to-purple-600", category: "dev" },
+
+  // ── 技术速查 ──
+  { name: "MySQL 速查手册", description: "MySQL 常用语句、函数、索引、权限操作速查", icon: "🐬", href: "/tools/mysql-cheatsheet", color: "from-blue-500 to-sky-600", category: "cheatsheet" },
+  { name: "Git 命令速查", description: "Git 日常开发常用命令：分支、远程、回退、暂存等", icon: "G", href: "/tools/git-cheatsheet", color: "from-orange-500 to-red-600", category: "cheatsheet" },
+  { name: "Linux 命令速查", description: "Linux 文件、目录、权限、进程、网络常用命令", icon: "🐧", href: "/tools/linux-cheatsheet", color: "from-slate-600 to-zinc-700", category: "cheatsheet" },
+  { name: "HTTP 状态码查询", description: "HTTP 状态码含义、使用场景和常见原因速查", icon: "🌐", href: "/tools/http-status", color: "from-green-500 to-emerald-600", category: "cheatsheet" },
+  { name: "Spring Boot 配置", description: "Spring Boot 常用配置、注解、代码片段速查", icon: "🍃", href: "/tools/springboot-ref", color: "from-green-600 to-lime-600", category: "cheatsheet" },
 ];
 
 export function getToolByHref(href: string): Tool | undefined {
