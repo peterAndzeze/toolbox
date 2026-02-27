@@ -7,15 +7,16 @@ const CHAR_SETS = {
   lowercase: "abcdefghijklmnopqrstuvwxyz",
   uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
   numbers: "0123456789",
-  symbols: "!@#$%^&*()_+-=[]{}|;:,.<>?",
 };
 
-function generatePassword(length: number, options: Record<string, boolean>): string {
+const DEFAULT_SYMBOLS = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+
+function generatePassword(length: number, options: Record<string, boolean>, symbols: string): string {
   let chars = "";
   if (options.lowercase) chars += CHAR_SETS.lowercase;
   if (options.uppercase) chars += CHAR_SETS.uppercase;
   if (options.numbers) chars += CHAR_SETS.numbers;
-  if (options.symbols) chars += CHAR_SETS.symbols;
+  if (options.symbols && symbols) chars += symbols;
   if (!chars) chars = CHAR_SETS.lowercase + CHAR_SETS.numbers;
 
   const array = new Uint32Array(length);
@@ -46,15 +47,16 @@ export default function PasswordGeneratorPage() {
     numbers: true,
     symbols: true,
   });
-  const [password, setPassword] = useState(() => generatePassword(16, { lowercase: true, uppercase: true, numbers: true, symbols: true }));
+  const [customSymbols, setCustomSymbols] = useState(DEFAULT_SYMBOLS);
+  const [password, setPassword] = useState(() => generatePassword(16, { lowercase: true, uppercase: true, numbers: true, symbols: true }, DEFAULT_SYMBOLS));
   const [history, setHistory] = useState<string[]>([]);
   const [copied, setCopied] = useState(-1);
 
   const generate = useCallback(() => {
-    const pwd = generatePassword(length, options);
+    const pwd = generatePassword(length, options, customSymbols);
     setPassword(pwd);
     setHistory((h) => [pwd, ...h].slice(0, 10));
-  }, [length, options]);
+  }, [length, options, customSymbols]);
 
   const copyText = (text: string, idx: number) => {
     navigator.clipboard.writeText(text);
@@ -134,6 +136,30 @@ export default function PasswordGeneratorPage() {
             </label>
           ))}
         </div>
+
+        {options.symbols && (
+          <div className="mt-3">
+            <label className="mb-1.5 block text-sm font-medium">自定义符号字符</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={customSymbols}
+                onChange={(e) => setCustomSymbols(e.target.value)}
+                placeholder="输入要包含的符号字符"
+                className="flex-1 rounded-lg border border-[var(--card-border)] bg-[var(--background)] px-3 py-2 font-mono text-sm outline-none focus:border-[var(--primary)]"
+              />
+              <button
+                onClick={() => setCustomSymbols(DEFAULT_SYMBOLS)}
+                className="shrink-0 rounded-lg border border-[var(--card-border)] px-3 py-2 text-xs hover:border-[var(--primary)]"
+              >
+                重置
+              </button>
+            </div>
+            <p className="mt-1 text-xs text-[var(--muted)]">
+              可删除不需要的符号，某些网站不接受特定符号
+            </p>
+          </div>
+        )}
 
         <button
           onClick={generate}

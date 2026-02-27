@@ -58,6 +58,9 @@ export const tools: Tool[] = [
   { name: "密码生成器", description: "生成安全随机密码，自定义长度和字符类型", icon: "🔐", href: "/tools/password-generator", color: "from-red-500 to-pink-600", category: "generator" },
   { name: "UUID 生成器", description: "批量生成 UUID/GUID，支持多个版本", icon: "ID", href: "/tools/uuid-generator", color: "from-violet-500 to-indigo-600", category: "generator" },
   { name: "Hash 生成器", description: "计算 SHA-1、SHA-256、SHA-512 等哈希值", icon: "#", href: "/tools/hash-generator", color: "from-slate-500 to-zinc-600", category: "generator" },
+  { name: "公私钥生成器", description: "在线生成 RSA/ECDSA 密钥对，支持 PEM 和 JWK 格式", icon: "🔑", href: "/tools/keypair-generator", color: "from-indigo-500 to-violet-600", category: "generator" },
+  { name: "身份证号生成器", description: "生成符合规则的测试用身份证号码，支持指定地区和性别", icon: "🪪", href: "/tools/idcard-generator", color: "from-amber-500 to-orange-600", category: "generator" },
+  { name: "手机号生成器", description: "生成符合号段规则的中国手机号码，支持指定运营商", icon: "📞", href: "/tools/phone-generator", color: "from-emerald-500 to-teal-600", category: "generator" },
 
   // ── 图片与文件 ──
   { name: "图片压缩", description: "在线压缩图片大小，保持清晰度，支持批量处理", icon: "🗜", href: "/tools/image-compressor", color: "from-blue-500 to-cyan-600", category: "media" },
@@ -78,6 +81,7 @@ export const tools: Tool[] = [
   { name: "Nginx 配置速查", description: "Nginx 反向代理、负载均衡、HTTPS、缓存、限流配置", icon: "N", href: "/tools/nginx-cheatsheet", color: "from-green-600 to-emerald-600", category: "cheatsheet" },
   { name: "Redis 命令速查", description: "Redis 数据结构、命令、事务、持久化操作速查", icon: "R", href: "/tools/redis-cheatsheet", color: "from-red-600 to-rose-600", category: "cheatsheet" },
   { name: "Spring Cloud 速查", description: "Nacos、Feign、Gateway、Sentinel 微服务组件配置", icon: "☁", href: "/tools/springcloud-cheatsheet", color: "from-emerald-500 to-green-600", category: "cheatsheet" },
+  { name: "Kubernetes 命令速查", description: "kubectl 全命令速查，Pod、Deployment、Service、RBAC 等", icon: "⎈", href: "/tools/k8s-cheatsheet", color: "from-blue-500 to-indigo-600", category: "cheatsheet" },
 ];
 
 export function getToolByHref(href: string): Tool | undefined {
