@@ -74,6 +74,10 @@ export const tools: Tool[] = [
   { name: "Linux 命令速查", description: "Linux 文件、目录、权限、进程、网络常用命令", icon: "🐧", href: "/tools/linux-cheatsheet", color: "from-slate-600 to-zinc-700", category: "cheatsheet" },
   { name: "HTTP 状态码查询", description: "HTTP 状态码含义、使用场景和常见原因速查", icon: "🌐", href: "/tools/http-status", color: "from-green-500 to-emerald-600", category: "cheatsheet" },
   { name: "Spring Boot 配置", description: "Spring Boot 常用配置、注解、代码片段速查", icon: "🍃", href: "/tools/springboot-ref", color: "from-green-600 to-lime-600", category: "cheatsheet" },
+  { name: "Docker 速查手册", description: "Docker 镜像、容器、Compose、Dockerfile 操作速查", icon: "🐳", href: "/tools/docker-cheatsheet", color: "from-blue-600 to-cyan-600", category: "cheatsheet" },
+  { name: "Nginx 配置速查", description: "Nginx 反向代理、负载均衡、HTTPS、缓存、限流配置", icon: "N", href: "/tools/nginx-cheatsheet", color: "from-green-600 to-emerald-600", category: "cheatsheet" },
+  { name: "Redis 命令速查", description: "Redis 数据结构、命令、事务、持久化操作速查", icon: "R", href: "/tools/redis-cheatsheet", color: "from-red-600 to-rose-600", category: "cheatsheet" },
+  { name: "Spring Cloud 速查", description: "Nacos、Feign、Gateway、Sentinel 微服务组件配置", icon: "☁", href: "/tools/springcloud-cheatsheet", color: "from-emerald-500 to-green-600", category: "cheatsheet" },
 ];
 
 export function getToolByHref(href: string): Tool | undefined {
