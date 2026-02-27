@@ -23,6 +23,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tools/pdf-tools",
     "/tools/lorem-generator",
     "/tools/css-unit",
+    "/tools/jwt-decoder",
+    "/tools/image-to-base64",
+    "/tools/sql-formatter",
+    "/tools/text-tools",
+    "/tools/html-entity",
+    "/tools/device-info",
   ];
 
   return [

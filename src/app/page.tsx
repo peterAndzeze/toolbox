@@ -134,6 +134,48 @@ const tools = [
     href: "/tools/css-unit",
     color: "from-rose-500 to-pink-600",
   },
+  {
+    name: "JWT 解码器",
+    description: "解析 JWT Token，查看 Header、Payload 和过期时间",
+    icon: "🔑",
+    href: "/tools/jwt-decoder",
+    color: "from-amber-500 to-yellow-600",
+  },
+  {
+    name: "图片转 Base64",
+    description: "图片转 Base64 编码，或 Base64 还原为图片",
+    icon: "🖼",
+    href: "/tools/image-to-base64",
+    color: "from-teal-500 to-cyan-600",
+  },
+  {
+    name: "SQL 格式化",
+    description: "SQL 语句格式化、压缩、关键字大写转换",
+    icon: "DB",
+    href: "/tools/sql-formatter",
+    color: "from-blue-500 to-indigo-600",
+  },
+  {
+    name: "文本处理",
+    description: "去重、排序、大小写转换、去空行等文本操作",
+    icon: "T✂",
+    href: "/tools/text-tools",
+    color: "from-green-500 to-lime-600",
+  },
+  {
+    name: "HTML 实体编解码",
+    description: "HTML 特殊字符转义与反转义，Unicode 编码",
+    icon: "&;",
+    href: "/tools/html-entity",
+    color: "from-orange-500 to-amber-600",
+  },
+  {
+    name: "设备信息检测",
+    description: "检测屏幕分辨率、浏览器信息、硬件配置",
+    icon: "📱",
+    href: "/tools/device-info",
+    color: "from-indigo-500 to-purple-600",
+  },
 ];
 
 export default function Home() {
