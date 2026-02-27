@@ -1,12 +1,29 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { tools, categories, getToolsByCategory } from "@/lib/tools-data";
 
 export default function Home() {
+  return (
+    <Suspense>
+      <HomeContent />
+    </Suspense>
+  );
+}
+
+function HomeContent() {
+  const searchParams = useSearchParams();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
+
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat && categories.some((c) => c.id === cat)) {
+      setActiveCategory(cat);
+    }
+  }, [searchParams]);
 
   const filteredTools = useMemo(() => {
     if (search.trim()) {

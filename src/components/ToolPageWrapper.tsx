@@ -18,7 +18,7 @@ export function ToolPageWrapper({ children }: { children: React.ReactNode }) {
         <nav className="breadcrumb mb-6 flex items-center gap-1.5 text-sm">
           <Link href="/" className="text-[var(--muted)] hover:text-[var(--primary)]">首页</Link>
           <span className="text-[var(--muted)]">/</span>
-          <Link href="/#tools" className="text-[var(--muted)] hover:text-[var(--primary)]">
+          <Link href={`/?category=${tool.category}#tools`} className="text-[var(--muted)] hover:text-[var(--primary)]">
             {category.icon} {category.name}
           </Link>
           <span className="text-[var(--muted)]">/</span>
