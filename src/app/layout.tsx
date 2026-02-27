@@ -82,6 +82,12 @@ export default function RootLayout({
               >
                 全部工具
               </Link>
+              <Link
+                href="/privacy"
+                className="text-[var(--muted)] transition-colors hover:text-[var(--foreground)]"
+              >
+                隐私政策
+              </Link>
             </div>
           </div>
         </nav>
@@ -97,9 +103,14 @@ export default function RootLayout({
                 <span className="text-lg">🧰</span>
                 <span className="text-sm font-semibold">速用工具箱</span>
               </div>
-              <p className="text-xs text-[var(--muted)]">
-                &copy; {new Date().getFullYear()} 速用工具箱. 免费在线工具，打开即用。
-              </p>
+              <div className="flex items-center gap-4">
+                <Link href="/privacy" className="text-xs text-[var(--muted)] hover:text-[var(--foreground)]">
+                  隐私政策
+                </Link>
+                <p className="text-xs text-[var(--muted)]">
+                  &copy; {new Date().getFullYear()} 速用工具箱. 免费在线工具，打开即用。
+                </p>
+              </div>
             </div>
           </div>
         </footer>
