@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import { GoogleAnalytics, BaiduAnalytics } from "@/components/Analytics";
+import { Navbar } from "@/components/Navbar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -24,21 +25,24 @@ export const metadata: Metadata = {
     template: "%s | 速用工具箱",
   },
   description:
-    "免费在线工具箱：JSON格式化、二维码生成、图片压缩、Markdown编辑器、密码生成器等10+实用工具，无需下载，打开即用。",
+    "免费在线工具箱：JSON格式化、二维码生成、图片压缩、Base64编解码、SQL格式化、JWT解码等28+实用工具，无需下载，打开即用，数据不上传服务器。",
   keywords: [
     "在线工具",
+    "免费工具",
     "JSON格式化",
     "二维码生成器",
     "图片压缩",
-    "Markdown编辑器",
-    "密码生成器",
     "Base64编解码",
+    "SQL格式化",
+    "JWT解码",
+    "密码生成器",
     "时间戳转换",
-    "免费工具",
+    "正则测试",
+    "开发者工具",
   ],
   openGraph: {
     title: "速用工具箱 - 免费在线工具集合",
-    description: "10+免费在线工具，无需下载，打开即用",
+    description: "28+免费在线工具，无需下载，打开即用，数据不上传服务器",
     type: "website",
   },
 };
@@ -65,30 +69,7 @@ export default function RootLayout({
         <GoogleAnalytics />
         <BaiduAnalytics />
 
-        <nav className="sticky top-0 z-50 border-b border-[var(--card-border)] bg-[var(--card-bg)]/80 backdrop-blur-md">
-          <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl">🧰</span>
-              <span className="text-lg font-bold tracking-tight">
-                速用工具箱
-              </span>
-            </Link>
-            <div className="hidden items-center gap-6 text-sm sm:flex">
-              <Link
-                href="/#tools"
-                className="text-[var(--muted)] transition-colors hover:text-[var(--foreground)]"
-              >
-                全部工具
-              </Link>
-              <Link
-                href="/privacy"
-                className="text-[var(--muted)] transition-colors hover:text-[var(--foreground)]"
-              >
-                隐私政策
-              </Link>
-            </div>
-          </div>
-        </nav>
+        <Navbar />
 
         <main className="mx-auto min-h-[calc(100vh-8rem)] max-w-6xl px-4 py-8 sm:px-6">
           {children}
