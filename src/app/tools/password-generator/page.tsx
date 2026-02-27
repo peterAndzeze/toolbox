@@ -41,6 +41,7 @@ function getStrength(password: string): { label: string; color: string; width: s
 
 export default function PasswordGeneratorPage() {
   const [length, setLength] = useState(16);
+  const [count, setCount] = useState(5);
   const [options, setOptions] = useState({
     lowercase: true,
     uppercase: true,
@@ -48,15 +49,18 @@ export default function PasswordGeneratorPage() {
     symbols: true,
   });
   const [customSymbols, setCustomSymbols] = useState(DEFAULT_SYMBOLS);
-  const [password, setPassword] = useState(() => generatePassword(16, { lowercase: true, uppercase: true, numbers: true, symbols: true }, DEFAULT_SYMBOLS));
-  const [history, setHistory] = useState<string[]>([]);
+  const [passwords, setPasswords] = useState<string[]>(() => {
+    const opts = { lowercase: true, uppercase: true, numbers: true, symbols: true };
+    return Array.from({ length: 5 }, () => generatePassword(16, opts, DEFAULT_SYMBOLS));
+  });
   const [copied, setCopied] = useState(-1);
 
   const generate = useCallback(() => {
-    const pwd = generatePassword(length, options, customSymbols);
-    setPassword(pwd);
-    setHistory((h) => [pwd, ...h].slice(0, 10));
-  }, [length, options, customSymbols]);
+    const list = Array.from({ length: count }, () =>
+      generatePassword(length, options, customSymbols)
+    );
+    setPasswords(list);
+  }, [length, count, options, customSymbols]);
 
   const copyText = (text: string, idx: number) => {
     navigator.clipboard.writeText(text);
@@ -64,7 +68,13 @@ export default function PasswordGeneratorPage() {
     setTimeout(() => setCopied(-1), 2000);
   };
 
-  const strength = getStrength(password);
+  const copyAll = () => {
+    navigator.clipboard.writeText(passwords.join("\n"));
+    setCopied(-2);
+    setTimeout(() => setCopied(-1), 2000);
+  };
+
+  const strength = passwords.length > 0 ? getStrength(passwords[0]) : null;
 
   const optionLabels: Record<string, string> = {
     lowercase: "小写字母 (a-z)",
@@ -78,48 +88,45 @@ export default function PasswordGeneratorPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold sm:text-3xl">密码生成器</h1>
         <p className="mt-2 text-[var(--muted)]">
-          生成安全随机密码，自定义长度和字符类型，使用加密随机数
+          批量生成安全随机密码，自定义长度和字符类型，使用加密随机数
         </p>
       </div>
 
       <div className="rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-6">
-        <div className="flex items-center gap-3 rounded-lg border border-[var(--card-border)] bg-[var(--background)] p-4">
-          <p className="flex-1 break-all font-mono text-lg font-semibold tracking-wide">
-            {password}
-          </p>
-          <button
-            onClick={() => copyText(password, -2)}
-            className="shrink-0 rounded-lg border border-[var(--card-border)] px-3 py-1.5 text-sm font-medium hover:border-[var(--primary)]"
-          >
-            {copied === -2 ? "已复制 ✓" : "复制"}
-          </button>
-        </div>
-
-        <div className="mt-3">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-[var(--muted)]">密码强度</span>
-            <span className="font-medium">{strength.label}</span>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-2 block text-sm font-medium">
+              密码长度: {length}
+            </label>
+            <input
+              type="range"
+              min={4}
+              max={64}
+              value={length}
+              onChange={(e) => setLength(Number(e.target.value))}
+              className="w-full accent-[var(--primary)]"
+            />
+            <div className="mt-1 flex justify-between text-xs text-[var(--muted)]">
+              <span>4</span>
+              <span>64</span>
+            </div>
           </div>
-          <div className="mt-1 h-2 rounded-full bg-[var(--card-border)]">
-            <div className={`h-full rounded-full transition-all ${strength.color} ${strength.width}`} />
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <label className="mb-2 block text-sm font-medium">
-            密码长度: {length}
-          </label>
-          <input
-            type="range"
-            min={4}
-            max={64}
-            value={length}
-            onChange={(e) => setLength(Number(e.target.value))}
-            className="w-full accent-[var(--primary)]"
-          />
-          <div className="mt-1 flex justify-between text-xs text-[var(--muted)]">
-            <span>4</span>
-            <span>64</span>
+          <div>
+            <label className="mb-2 block text-sm font-medium">
+              生成数量: {count}
+            </label>
+            <input
+              type="range"
+              min={1}
+              max={10}
+              value={count}
+              onChange={(e) => setCount(Number(e.target.value))}
+              className="w-full accent-[var(--primary)]"
+            />
+            <div className="mt-1 flex justify-between text-xs text-[var(--muted)]">
+              <span>1</span>
+              <span>10</span>
+            </div>
           </div>
         </div>
 
@@ -165,23 +172,42 @@ export default function PasswordGeneratorPage() {
           onClick={generate}
           className="btn-primary mt-6 w-full rounded-lg py-3 text-sm font-medium"
         >
-          生成新密码
+          生成 {count} 个密码
         </button>
       </div>
 
-      {history.length > 0 && (
-        <div className="mt-8">
-          <h2 className="mb-3 text-sm font-semibold text-[var(--muted)]">历史记录（最近 10 个）</h2>
+      {passwords.length > 0 && (
+        <div className="mt-6">
+          {strength && (
+            <div className="mb-4">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[var(--muted)]">密码强度</span>
+                <span className="font-medium">{strength.label}</span>
+              </div>
+              <div className="mt-1 h-2 rounded-full bg-[var(--card-border)]">
+                <div className={`h-full rounded-full transition-all ${strength.color} ${strength.width}`} />
+              </div>
+            </div>
+          )}
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-sm font-medium">{passwords.length} 个密码</span>
+            <button
+              onClick={copyAll}
+              className="text-xs text-[var(--primary)] hover:underline"
+            >
+              {copied === -2 ? "已复制 ✓" : "复制全部"}
+            </button>
+          </div>
           <div className="space-y-2">
-            {history.map((pwd, i) => (
+            {passwords.map((pwd, i) => (
               <div
                 key={i}
-                className="flex items-center justify-between rounded-lg border border-[var(--card-border)] bg-[var(--card-bg)] px-4 py-2"
+                className="flex items-center justify-between rounded-lg border border-[var(--card-border)] bg-[var(--card-bg)] px-4 py-2.5"
               >
-                <span className="truncate font-mono text-sm">{pwd}</span>
+                <span className="flex-1 truncate font-mono text-sm tracking-wide">{pwd}</span>
                 <button
                   onClick={() => copyText(pwd, i)}
-                  className="ml-2 shrink-0 text-xs text-[var(--primary)] hover:underline"
+                  className="ml-3 shrink-0 text-xs text-[var(--primary)] hover:underline"
                 >
                   {copied === i ? "已复制 ✓" : "复制"}
                 </button>

@@ -6,6 +6,7 @@ import { CheatSheet, CheatItem } from "@/components/CheatSheet";
 const categories = [
   "数据库操作", "表操作", "增删改查", "条件与排序", "聚合函数",
   "连接查询", "索引与约束", "常用函数", "用户与权限",
+  "事务管理", "视图", "存储过程与函数", "备份与恢复", "性能优化",
   "窗口函数", "CTE 公用表表达式", "JSON 操作",
 ];
 
@@ -256,32 +257,184 @@ const items: CheatItem[] = [
   // ── 用户与权限 ──
   {
     category: "用户与权限", title: "创建用户",
-    description: "创建新的数据库用户",
-    code: "CREATE USER 'appuser'@'%'\nIDENTIFIED BY 'StrongPassword123!';",
+    description: "创建新的数据库用户，可指定主机和认证方式",
+    code: "-- 允许任意主机连接\nCREATE USER 'appuser'@'%'\nIDENTIFIED BY 'StrongPassword123!';\n-- 仅允许本地连接\nCREATE USER 'localuser'@'localhost'\nIDENTIFIED BY 'Password456!';\n-- 仅允许指定 IP\nCREATE USER 'remote'@'192.168.1.%'\nIDENTIFIED BY 'Password789!';",
     docUrl: "https://dev.mysql.com/doc/refman/8.0/en/create-user.html",
   },
   {
-    category: "用户与权限", title: "授权",
-    description: "给用户分配权限",
-    code: "-- 给予特定数据库所有权限\nGRANT ALL PRIVILEGES ON mydb.* TO 'appuser'@'%';\n-- 只给查询权限\nGRANT SELECT ON mydb.* TO 'readonly'@'%';\n-- 刷新权限\nFLUSH PRIVILEGES;",
+    category: "用户与权限", title: "查看所有用户",
+    description: "列出服务器上的所有用户账号",
+    code: "-- 查看用户列表\nSELECT User, Host, authentication_string\nFROM mysql.user;\n-- 查看当前用户\nSELECT CURRENT_USER();\n-- 查看所有用户及最近登录\nSELECT User, Host, account_locked, password_expired\nFROM mysql.user;",
+  },
+  {
+    category: "用户与权限", title: "授权整个数据库",
+    description: "给用户授权某个数据库的所有权限",
+    code: "-- 所有权限（增删改查+结构操作）\nGRANT ALL PRIVILEGES ON mydb.* TO 'appuser'@'%';\n-- 只给 CRUD 权限\nGRANT SELECT, INSERT, UPDATE, DELETE ON mydb.* TO 'appuser'@'%';\n-- 给所有数据库的查询权限\nGRANT SELECT ON *.* TO 'readonly'@'%';\n-- 刷新权限\nFLUSH PRIVILEGES;",
     docUrl: "https://dev.mysql.com/doc/refman/8.0/en/grant.html",
+  },
+  {
+    category: "用户与权限", title: "授权指定表",
+    description: "精细化授权到表级别",
+    code: "-- 只授权某张表的查询\nGRANT SELECT ON mydb.users TO 'appuser'@'%';\n-- 多张表分别授权\nGRANT SELECT, INSERT ON mydb.orders TO 'appuser'@'%';\nGRANT SELECT ON mydb.products TO 'appuser'@'%';\n-- 授权表的增删改查\nGRANT SELECT, INSERT, UPDATE, DELETE\nON mydb.users TO 'appuser'@'%';",
+  },
+  {
+    category: "用户与权限", title: "授权指定列",
+    description: "精细化授权到列级别，限制用户只能操作特定字段",
+    code: "-- 只允许查看 name 和 email 列\nGRANT SELECT (name, email) ON mydb.users TO 'appuser'@'%';\n-- 只允许更新 email 列\nGRANT UPDATE (email) ON mydb.users TO 'appuser'@'%';\n-- 只允许插入指定列\nGRANT INSERT (name, email) ON mydb.users TO 'appuser'@'%';",
+  },
+  {
+    category: "用户与权限", title: "权限类型详解",
+    description: "MySQL 常用权限类型列表",
+    code: "-- 数据操作权限\n-- SELECT    查询数据\n-- INSERT    插入数据\n-- UPDATE    更新数据\n-- DELETE    删除数据\n\n-- 结构操作权限\n-- CREATE    创建数据库/表\n-- ALTER     修改表结构\n-- DROP      删除数据库/表\n-- INDEX     创建/删除索引\n-- REFERENCES 创建外键\n\n-- 管理权限\n-- GRANT OPTION   可将自己的权限授予他人\n-- PROCESS        查看所有进程\n-- RELOAD         执行 FLUSH\n-- SUPER          杀掉其他用户进程\n-- CREATE USER    创建/删除用户\n-- SHOW DATABASES 查看所有数据库",
   },
   {
     category: "用户与权限", title: "撤销权限",
     description: "收回用户权限",
-    code: "REVOKE ALL PRIVILEGES ON mydb.* FROM 'appuser'@'%';",
+    code: "-- 撤销数据库级别权限\nREVOKE ALL PRIVILEGES ON mydb.* FROM 'appuser'@'%';\n-- 撤销特定表权限\nREVOKE SELECT ON mydb.users FROM 'appuser'@'%';\n-- 撤销全局权限\nREVOKE ALL PRIVILEGES, GRANT OPTION FROM 'appuser'@'%';",
   },
   {
     category: "用户与权限", title: "查看权限",
-    description: "查看用户的权限",
-    code: "SHOW GRANTS FOR 'appuser'@'%';",
+    description: "查看用户的权限详情",
+    code: "-- 查看指定用户权限\nSHOW GRANTS FOR 'appuser'@'%';\n-- 查看当前用户权限\nSHOW GRANTS;\n-- 从系统表查看库级权限\nSELECT * FROM mysql.db WHERE User = 'appuser';\n-- 查看表级权限\nSELECT * FROM mysql.tables_priv WHERE User = 'appuser';\n-- 查看列级权限\nSELECT * FROM mysql.columns_priv WHERE User = 'appuser';",
+  },
+  {
+    category: "用户与权限", title: "修改密码",
+    description: "修改用户密码",
+    code: "-- 8.0 推荐方式\nALTER USER 'appuser'@'%'\nIDENTIFIED BY 'NewPassword456!';\n-- 修改当前用户密码\nSET PASSWORD = 'NewPassword456!';\n-- 密码过期，强制用户下次登录修改\nALTER USER 'appuser'@'%' PASSWORD EXPIRE;",
+  },
+  {
+    category: "用户与权限", title: "删除用户与锁定",
+    description: "删除用户或锁定/解锁账户",
+    code: "-- 删除用户\nDROP USER 'appuser'@'%';\nDROP USER IF EXISTS 'tempuser'@'%';\n-- 锁定账户（禁止登录）\nALTER USER 'appuser'@'%' ACCOUNT LOCK;\n-- 解锁账户\nALTER USER 'appuser'@'%' ACCOUNT UNLOCK;",
   },
   {
     category: "用户与权限", title: "角色管理",
     description: "8.0 起支持 SQL 角色，批量管理权限",
-    code: "-- 创建角色\nCREATE ROLE 'app_read', 'app_write';\n-- 给角色授权\nGRANT SELECT ON mydb.* TO 'app_read';\nGRANT INSERT, UPDATE, DELETE ON mydb.* TO 'app_write';\n-- 将角色赋予用户\nGRANT 'app_read', 'app_write' TO 'appuser'@'%';\n-- 激活角色\nSET DEFAULT ROLE ALL TO 'appuser'@'%';",
+    code: "-- 创建角色\nCREATE ROLE 'app_read', 'app_write';\n-- 给角色授权\nGRANT SELECT ON mydb.* TO 'app_read';\nGRANT INSERT, UPDATE, DELETE ON mydb.* TO 'app_write';\n-- 将角色赋予用户\nGRANT 'app_read', 'app_write' TO 'appuser'@'%';\n-- 激活角色\nSET DEFAULT ROLE ALL TO 'appuser'@'%';\n-- 查看角色\nSELECT * FROM mysql.role_edges;",
     addedIn: "8.0",
     docUrl: "https://dev.mysql.com/doc/refman/8.0/en/roles.html",
+  },
+
+  // ── 事务管理 ──
+  {
+    category: "事务管理", title: "基本事务",
+    description: "BEGIN/COMMIT/ROLLBACK 控制事务",
+    code: "START TRANSACTION;\n\nUPDATE accounts SET balance = balance - 100 WHERE id = 1;\nUPDATE accounts SET balance = balance + 100 WHERE id = 2;\n\n-- 一切正常则提交\nCOMMIT;\n-- 出错则回滚\n-- ROLLBACK;",
+    docUrl: "https://dev.mysql.com/doc/refman/8.0/en/commit.html",
+  },
+  {
+    category: "事务管理", title: "SAVEPOINT 保存点",
+    description: "在事务中设置回滚点，可以部分回滚",
+    code: "START TRANSACTION;\n\nINSERT INTO orders (user_id, amount) VALUES (1, 500);\nSAVEPOINT sp_order;\n\nINSERT INTO order_items (order_id, product_id) VALUES (100, 5);\n-- 这一步出错，只回滚到保存点\nROLLBACK TO sp_order;\n\n-- 保留 orders 的插入\nCOMMIT;",
+  },
+  {
+    category: "事务管理", title: "隔离级别",
+    description: "查看和设置事务隔离级别",
+    code: "-- 查看当前隔离级别\nSELECT @@transaction_isolation;\n\n-- 设置会话级别\nSET SESSION TRANSACTION ISOLATION LEVEL\n  READ COMMITTED;\n\n-- 四种隔离级别：\n-- READ UNCOMMITTED  读未提交（最低）\n-- READ COMMITTED    读已提交\n-- REPEATABLE READ   可重复读（InnoDB默认）\n-- SERIALIZABLE      串行化（最高）",
+    docUrl: "https://dev.mysql.com/doc/refman/8.0/en/innodb-transaction-isolation-levels.html",
+  },
+  {
+    category: "事务管理", title: "自动提交",
+    description: "控制是否自动提交每条 SQL",
+    code: "-- 查看自动提交状态\nSELECT @@autocommit;\n-- 关闭自动提交（需要手动 COMMIT）\nSET autocommit = 0;\n-- 开启自动提交\nSET autocommit = 1;",
+  },
+  {
+    category: "事务管理", title: "死锁处理",
+    description: "查看和处理死锁",
+    code: "-- 查看最近的死锁信息\nSHOW ENGINE INNODB STATUS;\n-- 查看当前锁等待\nSELECT * FROM information_schema.INNODB_LOCK_WAITS;\n-- 查看正在运行的事务\nSELECT * FROM information_schema.INNODB_TRX;\n-- 杀掉阻塞的进程\nKILL <process_id>;",
+  },
+  {
+    category: "事务管理", title: "锁操作",
+    description: "手动加表锁和行锁",
+    code: "-- 表锁\nLOCK TABLES users READ;\nLOCK TABLES users WRITE;\nUNLOCK TABLES;\n\n-- 行锁（InnoDB，需在事务中）\nSELECT * FROM users WHERE id = 1 FOR UPDATE;\nSELECT * FROM users WHERE id = 1 FOR SHARE;",
+  },
+
+  // ── 视图 ──
+  {
+    category: "视图", title: "创建视图",
+    description: "基于查询创建虚拟表",
+    code: "CREATE VIEW v_active_users AS\nSELECT id, name, email, last_login\nFROM users\nWHERE status = 'active';",
+    docUrl: "https://dev.mysql.com/doc/refman/8.0/en/create-view.html",
+  },
+  {
+    category: "视图", title: "使用与管理视图",
+    description: "查询视图、查看定义、修改和删除",
+    code: "-- 像普通表一样查询\nSELECT * FROM v_active_users WHERE name LIKE '张%';\n-- 查看视图定义\nSHOW CREATE VIEW v_active_users;\n-- 查看所有视图\nSELECT TABLE_NAME FROM information_schema.VIEWS\nWHERE TABLE_SCHEMA = 'mydb';\n-- 修改视图\nALTER VIEW v_active_users AS\nSELECT id, name FROM users WHERE status = 'active';\n-- 删除视图\nDROP VIEW IF EXISTS v_active_users;",
+  },
+
+  // ── 存储过程与函数 ──
+  {
+    category: "存储过程与函数", title: "创建存储过程",
+    description: "定义可重复调用的 SQL 程序",
+    code: "DELIMITER //\nCREATE PROCEDURE sp_get_user(IN uid BIGINT)\nBEGIN\n  SELECT * FROM users WHERE id = uid;\nEND //\nDELIMITER ;\n\n-- 带输出参数\nDELIMITER //\nCREATE PROCEDURE sp_count_users(\n  IN city_name VARCHAR(50),\n  OUT total INT\n)\nBEGIN\n  SELECT COUNT(*) INTO total\n  FROM users WHERE city = city_name;\nEND //\nDELIMITER ;",
+    docUrl: "https://dev.mysql.com/doc/refman/8.0/en/create-procedure.html",
+  },
+  {
+    category: "存储过程与函数", title: "调用与管理存储过程",
+    description: "调用、查看和删除存储过程",
+    code: "-- 调用存储过程\nCALL sp_get_user(1);\n-- 带输出参数调用\nCALL sp_count_users('北京', @cnt);\nSELECT @cnt;\n-- 查看存储过程\nSHOW PROCEDURE STATUS WHERE Db = 'mydb';\n-- 查看定义\nSHOW CREATE PROCEDURE sp_get_user;\n-- 删除\nDROP PROCEDURE IF EXISTS sp_get_user;",
+  },
+  {
+    category: "存储过程与函数", title: "自定义函数",
+    description: "创建可在 SQL 中调用的自定义函数",
+    code: "DELIMITER //\nCREATE FUNCTION fn_full_name(\n  first_name VARCHAR(50),\n  last_name VARCHAR(50)\n) RETURNS VARCHAR(101)\nDETERMINISTIC\nBEGIN\n  RETURN CONCAT(first_name, ' ', last_name);\nEND //\nDELIMITER ;\n\n-- 使用\nSELECT fn_full_name('张', '三') AS name;\nSELECT fn_full_name(first_name, last_name) FROM users;",
+  },
+  {
+    category: "存储过程与函数", title: "流程控制",
+    description: "存储过程中的 IF/CASE/WHILE/LOOP",
+    code: "DELIMITER //\nCREATE PROCEDURE sp_classify_age(IN uid BIGINT)\nBEGIN\n  DECLARE user_age INT;\n  DECLARE label VARCHAR(20);\n\n  SELECT age INTO user_age FROM users WHERE id = uid;\n\n  IF user_age < 18 THEN\n    SET label = '未成年';\n  ELSEIF user_age < 60 THEN\n    SET label = '成年人';\n  ELSE\n    SET label = '老年人';\n  END IF;\n\n  SELECT uid, user_age, label;\nEND //\nDELIMITER ;",
+  },
+
+  // ── 备份与恢复 ──
+  {
+    category: "备份与恢复", title: "mysqldump 备份",
+    description: "使用 mysqldump 导出数据库",
+    code: "# 备份单个数据库\nmysqldump -u root -p mydb > mydb_backup.sql\n# 备份指定表\nmysqldump -u root -p mydb users orders > tables_backup.sql\n# 备份所有数据库\nmysqldump -u root -p --all-databases > all_backup.sql\n# 只导出结构（不含数据）\nmysqldump -u root -p --no-data mydb > schema.sql\n# 只导出数据（不含结构）\nmysqldump -u root -p --no-create-info mydb > data.sql",
+    docUrl: "https://dev.mysql.com/doc/refman/8.0/en/mysqldump.html",
+  },
+  {
+    category: "备份与恢复", title: "恢复数据",
+    description: "从备份文件恢复数据库",
+    code: "# 恢复数据库\nmysql -u root -p mydb < mydb_backup.sql\n# 恢复时创建数据库\nmysql -u root -p < all_backup.sql\n# 在 MySQL 内恢复\nSOURCE /path/to/backup.sql;",
+  },
+  {
+    category: "备份与恢复", title: "导出导入 CSV",
+    description: "导出数据为 CSV 或从 CSV 导入",
+    code: "-- 导出为 CSV（需要 FILE 权限）\nSELECT * FROM users\nINTO OUTFILE '/tmp/users.csv'\nFIELDS TERMINATED BY ','\nENCLOSED BY '\"'\nLINES TERMINATED BY '\\n';\n\n-- 从 CSV 导入\nLOAD DATA INFILE '/tmp/users.csv'\nINTO TABLE users\nFIELDS TERMINATED BY ','\nENCLOSED BY '\"'\nLINES TERMINATED BY '\\n'\nIGNORE 1 ROWS;",
+    docUrl: "https://dev.mysql.com/doc/refman/8.0/en/load-data.html",
+  },
+  {
+    category: "备份与恢复", title: "二进制日志",
+    description: "查看和管理 binlog，用于增量恢复和主从复制",
+    code: "-- 查看 binlog 是否开启\nSHOW VARIABLES LIKE 'log_bin';\n-- 查看所有 binlog 文件\nSHOW BINARY LOGS;\n-- 查看 binlog 内容\nSHOW BINLOG EVENTS IN 'mysql-bin.000001' LIMIT 20;\n-- 用 mysqlbinlog 工具查看\n# mysqlbinlog mysql-bin.000001\n-- 基于 binlog 做时间点恢复\n# mysqlbinlog --start-datetime='2024-01-01 00:00:00' \\\n#   --stop-datetime='2024-01-01 12:00:00' \\\n#   mysql-bin.000001 | mysql -u root -p",
+  },
+
+  // ── 性能优化 ──
+  {
+    category: "性能优化", title: "EXPLAIN 分析",
+    description: "分析 SQL 执行计划，发现性能瓶颈",
+    code: "-- 基本用法\nEXPLAIN SELECT * FROM users WHERE name = '张三';\n-- 详细格式\nEXPLAIN FORMAT=JSON\nSELECT * FROM users WHERE name = '张三';\n-- 关键字段说明：\n-- type: ALL(全表扫描) > index > range > ref > eq_ref > const\n-- key:  实际使用的索引\n-- rows: 预估扫描行数\n-- Extra: Using index(覆盖索引), Using filesort(需要排序)",
+    docUrl: "https://dev.mysql.com/doc/refman/8.0/en/explain-output.html",
+  },
+  {
+    category: "性能优化", title: "慢查询日志",
+    description: "开启和分析慢查询日志",
+    code: "-- 查看慢查询配置\nSHOW VARIABLES LIKE 'slow_query%';\nSHOW VARIABLES LIKE 'long_query_time';\n-- 开启慢查询日志\nSET GLOBAL slow_query_log = 'ON';\nSET GLOBAL long_query_time = 1;\nSET GLOBAL slow_query_log_file = '/var/log/mysql/slow.log';\n-- 分析慢查询日志\n# mysqldumpslow -s t -t 10 /var/log/mysql/slow.log",
+  },
+  {
+    category: "性能优化", title: "进程与连接",
+    description: "查看和管理当前连接和查询",
+    code: "-- 查看当前所有进程\nSHOW PROCESSLIST;\nSHOW FULL PROCESSLIST;\n-- 杀掉某个长时间运行的查询\nKILL <process_id>;\n-- 查看最大连接数\nSHOW VARIABLES LIKE 'max_connections';\n-- 查看当前连接数\nSHOW STATUS LIKE 'Threads_connected';",
+  },
+  {
+    category: "性能优化", title: "表维护",
+    description: "分析、优化和检查表",
+    code: "-- 分析表（更新索引统计信息）\nANALYZE TABLE users;\n-- 优化表（回收碎片空间）\nOPTIMIZE TABLE users;\n-- 检查表完整性\nCHECK TABLE users;\n-- 修复表\nREPAIR TABLE users;\n-- 查看表状态\nSHOW TABLE STATUS LIKE 'users';",
+  },
+  {
+    category: "性能优化", title: "服务器状态",
+    description: "查看 MySQL 服务器运行状态和变量",
+    code: "-- 查看 InnoDB 引擎状态\nSHOW ENGINE INNODB STATUS;\n-- 查看全局状态变量\nSHOW GLOBAL STATUS;\n-- 查看缓冲池命中率\nSHOW STATUS LIKE 'Innodb_buffer_pool%';\n-- 查看系统变量\nSHOW VARIABLES LIKE 'innodb_buffer_pool_size';\n-- 查看表空间使用\nSELECT table_name,\n  ROUND(data_length/1024/1024, 2) AS data_mb,\n  ROUND(index_length/1024/1024, 2) AS index_mb\nFROM information_schema.tables\nWHERE table_schema = 'mydb'\nORDER BY data_length DESC;",
   },
 
   // ── 窗口函数（8.0+）──
