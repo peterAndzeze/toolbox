@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: "%s | 速用工具箱",
   },
   description:
-    "免费在线工具箱：JSON格式化、二维码生成、图片压缩、Base64编解码、SQL格式化、JWT解码等28+实用工具，无需下载，打开即用，数据不上传服务器。",
+    "免费在线工具箱：JSON格式化、房贷计算器、图片压缩、Base64编解码、CSS生成器、个税计算器等68+实用工具，无需下载，打开即用，数据不上传服务器。",
   keywords: [
     "在线工具",
     "免费工具",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "速用工具箱 - 免费在线工具集合",
-    description: "28+免费在线工具，无需下载，打开即用，数据不上传服务器",
+    description: "68+免费在线工具，无需下载，打开即用，数据不上传服务器",
     type: "website",
   },
 };
@@ -55,6 +55,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}else{document.documentElement.removeAttribute('data-theme')}}catch(e){}})()` }} />
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-4JGDX4SQR4" />
         <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-4JGDX4SQR4');` }} />
         <script

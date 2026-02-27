@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { categories, getToolsByCategory } from "@/lib/tools-data";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -66,6 +67,8 @@ export function Navbar() {
           <Link href="/privacy" className="text-[var(--muted)] transition-colors hover:text-[var(--foreground)]">
             隐私政策
           </Link>
+
+          <ThemeToggle />
         </div>
 
         {/* Mobile hamburger */}
@@ -108,11 +111,12 @@ export function Navbar() {
               </Link>
             ))}
           </div>
-          <div className="border-t border-[var(--card-border)]">
+          <div className="flex items-center justify-between border-t border-[var(--card-border)] py-3">
             <Link href="/privacy" onClick={() => setMobileOpen(false)}
-              className="block py-3 text-sm text-[var(--muted)]">
+              className="text-sm text-[var(--muted)]">
               隐私政策
             </Link>
+            <ThemeToggle />
           </div>
         </div>
       )}

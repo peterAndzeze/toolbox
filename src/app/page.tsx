@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { tools, categories, getToolsByCategory } from "@/lib/tools-data";
+import { tools, categories, getToolsByCategory, getToolByHref } from "@/lib/tools-data";
 
 const HOT_TOOLS = [
   "/tools/json-formatter",
@@ -17,6 +17,10 @@ const HOT_TOOLS = [
 ];
 
 const NEW_TOOLS = [
+  "/tools/currency-converter",
+  "/tools/calendar",
+  "/tools/electricity-calculator",
+  "/tools/fuel-calculator",
   "/tools/mortgage-calculator",
   "/tools/tax-calculator",
   "/tools/bmi-calculator",
@@ -27,9 +31,6 @@ const NEW_TOOLS = [
   "/tools/code-snapshot",
   "/tools/sql-to-java",
   "/tools/http-tester",
-  "/tools/aes-des",
-  "/tools/curl-converter",
-  "/tools/json-to-code",
 ];
 
 const QUICK_TAGS = ["JSON", "Base64", "加密", "图片", "计算器", "CSS", "密码", "SQL", "时间戳", "二维码"];
@@ -46,12 +47,20 @@ function HomeContent() {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
+  const [favHrefs, setFavHrefs] = useState<string[]>([]);
+  const [recentHrefs, setRecentHrefs] = useState<string[]>([]);
 
   useEffect(() => {
     const cat = searchParams.get("category");
     if (cat && categories.some((c) => c.id === cat)) {
       setActiveCategory(cat);
     }
+    try {
+      const f = JSON.parse(localStorage.getItem("toolbox_favorites") || "[]");
+      if (Array.isArray(f)) setFavHrefs(f);
+      const r = JSON.parse(localStorage.getItem("toolbox_recent") || "[]");
+      if (Array.isArray(r)) setRecentHrefs(r);
+    } catch {}
   }, [searchParams]);
 
   const filteredTools = useMemo(() => {
@@ -72,6 +81,16 @@ function HomeContent() {
   const hotTools = useMemo(() =>
     HOT_TOOLS.map((href) => tools.find((t) => t.href === href)).filter(Boolean) as typeof tools,
     []
+  );
+
+  const favTools = useMemo(() =>
+    favHrefs.map((h) => getToolByHref(h)).filter(Boolean) as typeof tools,
+    [favHrefs]
+  );
+
+  const recentTools = useMemo(() =>
+    recentHrefs.slice(0, 6).map((h) => getToolByHref(h)).filter(Boolean) as typeof tools,
+    [recentHrefs]
   );
 
   return (
@@ -126,6 +145,53 @@ function HomeContent() {
           已上线 {tools.length} 个工具，持续更新中
         </div>
       </section>
+
+      {/* Favorites */}
+      {isGrouped && favTools.length > 0 && (
+        <section className="mb-10">
+          <div className="mb-4 flex items-center gap-2">
+            <span className="text-xl">❤️</span>
+            <h2 className="text-lg font-semibold">我的收藏</h2>
+            <span className="text-sm text-[var(--muted)]">({favTools.length})</span>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {favTools.map((t) => (
+              <Link key={t.href} href={t.href} className="hot-tool-card group flex items-center gap-3 rounded-xl p-4">
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${t.color} text-base font-bold text-white`}>
+                  {t.icon}
+                </div>
+                <div className="min-w-0">
+                  <h3 className="truncate text-sm font-semibold group-hover:text-[var(--primary)]">{t.name}</h3>
+                  <p className="truncate text-xs text-[var(--muted)]">{t.description}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Recent tools */}
+      {isGrouped && recentTools.length > 0 && (
+        <section className="mb-10">
+          <div className="mb-4 flex items-center gap-2">
+            <span className="text-xl">🕐</span>
+            <h2 className="text-lg font-semibold">最近使用</h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {recentTools.map((t) => (
+              <Link key={t.href} href={t.href} className="hot-tool-card group flex items-center gap-3 rounded-xl p-4">
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${t.color} text-base font-bold text-white`}>
+                  {t.icon}
+                </div>
+                <div className="min-w-0">
+                  <h3 className="truncate text-sm font-semibold group-hover:text-[var(--primary)]">{t.name}</h3>
+                  <p className="truncate text-xs text-[var(--muted)]">{t.description}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Hot Tools */}
       {isGrouped && (

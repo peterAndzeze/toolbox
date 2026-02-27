@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root {
   --background: #fafbfc;
   --foreground: #1a1a2e;
@@ -19,16 +21,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f0f23;
-    --foreground: #e2e8f0;
-    --primary: #818cf8;
-    --primary-hover: #6366f1;
-    --card-bg: #1e1e3a;
-    --card-border: #2d2d5e;
-    --muted: #94a3b8;
-  }
+[data-theme="dark"] {
+  --background: #0f0f23;
+  --foreground: #e2e8f0;
+  --primary: #818cf8;
+  --primary-hover: #6366f1;
+  --card-bg: #1e1e3a;
+  --card-border: #2d2d5e;
+  --muted: #94a3b8;
 }
 
 body {
@@ -342,4 +342,30 @@ body {
 .feature-card:hover {
   border-color: var(--primary);
   transform: translateY(-2px);
+}
+
+/* ── Share buttons ── */
+
+.share-btn {
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--muted);
+  transition: all 0.2s ease;
+}
+
+.share-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* ── Recent / Favorites section ── */
+
+.section-header-icon {
+  display: flex;
+  height: 1.75rem;
+  width: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
 }

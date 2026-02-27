@@ -112,6 +112,10 @@ export const tools: Tool[] = [
   { name: "个税计算器", description: "2026 个人所得税计算，支持五险一金和专项附加扣除", icon: "💰", href: "/tools/tax-calculator", color: "from-emerald-500 to-green-600", category: "life" },
   { name: "BMI 计算器", description: "身体质量指数在线计算，参考中国和 WHO 标准", icon: "⚖️", href: "/tools/bmi-calculator", color: "from-orange-500 to-amber-600", category: "life" },
   { name: "年龄/日期计算器", description: "精确计算年龄、日期间隔、日期推算，显示生肖星座", icon: "📅", href: "/tools/date-calculator", color: "from-purple-500 to-violet-600", category: "life" },
+  { name: "汇率换算", description: "实时汇率查询与转换，支持 CNY/USD/EUR/JPY 等主流货币", icon: "💱", href: "/tools/currency-converter", color: "from-green-500 to-emerald-600", category: "life" },
+  { name: "万年历/黄历", description: "公历农历对照，节日节气查询，宜忌老黄历", icon: "📆", href: "/tools/calendar", color: "from-red-500 to-rose-600", category: "life" },
+  { name: "电费计算器", description: "家用电器耗电量和电费在线计算，支持阶梯电价", icon: "⚡", href: "/tools/electricity-calculator", color: "from-yellow-500 to-amber-600", category: "life" },
+  { name: "油耗计算器", description: "百公里油耗、加油费用计算，支持多种油品价格", icon: "⛽", href: "/tools/fuel-calculator", color: "from-sky-500 to-blue-600", category: "life" },
 ];
 
 export function getToolByHref(href: string): Tool | undefined {
