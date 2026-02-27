@@ -71,6 +71,41 @@ const tools = [
     href: "/tools/timestamp",
     color: "from-orange-500 to-red-600",
   },
+  {
+    name: "YAML 格式化",
+    description: "YAML 格式化、校验，支持 YAML 与 JSON 互转",
+    icon: "Y{}",
+    href: "/tools/yaml-formatter",
+    color: "from-yellow-500 to-amber-600",
+  },
+  {
+    name: "文本对比 Diff",
+    description: "逐行对比两段文本差异，高亮新增和删除内容",
+    icon: "±",
+    href: "/tools/text-diff",
+    color: "from-emerald-500 to-teal-600",
+  },
+  {
+    name: "Hash 生成器",
+    description: "计算 SHA-1、SHA-256、SHA-512 等哈希值",
+    icon: "#",
+    href: "/tools/hash-generator",
+    color: "from-slate-500 to-zinc-600",
+  },
+  {
+    name: "正则表达式测试",
+    description: "实时测试正则表达式，高亮匹配结果，内置预设",
+    icon: ".*",
+    href: "/tools/regex-tester",
+    color: "from-fuchsia-500 to-purple-600",
+  },
+  {
+    name: "进制转换器",
+    description: "二进制、八进制、十进制、十六进制互相转换",
+    icon: "0x",
+    href: "/tools/number-base",
+    color: "from-cyan-500 to-blue-600",
+  },
 ];
 
 export default function Home() {
