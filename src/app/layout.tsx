@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  verification: {
+    google: "google70281fede3ad0afe",
+  },
   title: {
     default: "速用工具箱 - 免费在线工具集合",
     template: "%s | 速用工具箱",
