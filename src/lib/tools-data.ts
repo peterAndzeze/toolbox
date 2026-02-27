@@ -32,6 +32,10 @@ export const tools: Tool[] = [
   { name: "HTML 实体编解码", description: "HTML 特殊字符转义与反转义，Unicode 编码", icon: "&;", href: "/tools/html-entity", color: "from-orange-500 to-amber-600", category: "encoding" },
   { name: "JWT 解码器", description: "解析 JWT Token，查看 Header、Payload 和过期时间", icon: "🔑", href: "/tools/jwt-decoder", color: "from-amber-500 to-yellow-600", category: "encoding" },
   { name: "图片转 Base64", description: "图片转 Base64 编码，或 Base64 还原为图片", icon: "🖼", href: "/tools/image-to-base64", color: "from-teal-500 to-cyan-600", category: "encoding" },
+  { name: "AES/DES 加解密", description: "AES-CBC、AES-GCM 对称加密，支持 128/192/256 位密钥", icon: "🔒", href: "/tools/aes-des", color: "from-indigo-500 to-violet-600", category: "encoding" },
+  { name: "摩斯密码转换", description: "文本与摩斯密码互转，支持播放音频和完整对照表", icon: "📡", href: "/tools/morse-code", color: "from-amber-500 to-yellow-600", category: "encoding" },
+  { name: "Unicode 编解码", description: "中文与 Unicode、HTML 实体、UTF-8 Hex 格式互转", icon: "U", href: "/tools/unicode-converter", color: "from-sky-500 to-indigo-600", category: "encoding" },
+  { name: "Hex 字符串互转", description: "文本与十六进制互转，支持 UTF-8 编码和多种分隔格式", icon: "0x", href: "/tools/hex-string", color: "from-purple-500 to-indigo-600", category: "encoding" },
 
   // ── 格式化 ──
   { name: "JSON 格式化", description: "JSON 数据格式化、压缩、校验，支持语法高亮显示", icon: "{ }", href: "/tools/json-formatter", color: "from-amber-500 to-orange-600", category: "formatter" },
@@ -53,6 +57,8 @@ export const tools: Tool[] = [
   { name: "CSS 单位转换", description: "px、rem、em、vw、pt 等 CSS 单位互转", icon: "px", href: "/tools/css-unit", color: "from-rose-500 to-pink-600", category: "converter" },
   { name: "JSON-CSV 转换", description: "JSON 与 CSV 格式互相转换", icon: "⇄", href: "/tools/json-csv", color: "from-indigo-500 to-violet-600", category: "converter" },
   { name: "数据速率换算", description: "带宽 Mbps/Gbps 与存储 MB/GB 单位互转，下载时间计算", icon: "📶", href: "/tools/data-rate-converter", color: "from-teal-500 to-cyan-600", category: "converter" },
+  { name: "简繁体转换", description: "中文简体与繁体一键互转，实时转换，准确率高", icon: "繁", href: "/tools/zh-convert", color: "from-red-500 to-rose-600", category: "converter" },
+  { name: "汉字转拼音", description: "中文汉字转拼音，支持声调标注和首字母提取", icon: "拼", href: "/tools/pinyin", color: "from-orange-500 to-amber-600", category: "converter" },
 
   // ── 生成器 ──
   { name: "二维码生成器", description: "输入文字或链接，即时生成二维码，支持下载保存", icon: "▣", href: "/tools/qrcode-generator", color: "from-green-500 to-emerald-600", category: "generator" },
@@ -62,16 +68,22 @@ export const tools: Tool[] = [
   { name: "公私钥生成器", description: "在线生成 RSA/ECDSA 密钥对，支持 PEM 和 JWK 格式", icon: "🔑", href: "/tools/keypair-generator", color: "from-indigo-500 to-violet-600", category: "generator" },
   { name: "身份证号生成器", description: "生成符合规则的测试用身份证号码，支持指定地区和性别", icon: "🪪", href: "/tools/idcard-generator", color: "from-amber-500 to-orange-600", category: "generator" },
   { name: "手机号生成器", description: "生成符合号段规则的中国手机号码，支持指定运营商", icon: "📞", href: "/tools/phone-generator", color: "from-emerald-500 to-teal-600", category: "generator" },
+  { name: "随机数生成器", description: "支持整数、小数、抽奖、骰子模式，密码学安全随机", icon: "🎲", href: "/tools/random-generator", color: "from-cyan-500 to-blue-600", category: "generator" },
 
   // ── 图片与文件 ──
   { name: "图片压缩", description: "在线压缩图片大小，保持清晰度，支持批量处理", icon: "🗜", href: "/tools/image-compressor", color: "from-blue-500 to-cyan-600", category: "media" },
   { name: "PDF 工具箱", description: "PDF 合并、拆分、信息提取，本地处理", icon: "📄", href: "/tools/pdf-tools", color: "from-red-500 to-orange-600", category: "media" },
+  { name: "图片格式转换", description: "PNG、JPG、WebP、BMP、GIF 格式互转，可调节压缩质量", icon: "🔄", href: "/tools/image-converter", color: "from-violet-500 to-purple-600", category: "media" },
+  { name: "图片水印工具", description: "在线添加文字水印，支持自定义字号、颜色、透明度和平铺", icon: "💧", href: "/tools/image-watermark", color: "from-sky-500 to-blue-600", category: "media" },
 
   // ── 开发辅助 ──
   { name: "正则表达式测试", description: "实时测试正则表达式，高亮匹配结果，内置预设", icon: ".*", href: "/tools/regex-tester", color: "from-fuchsia-500 to-purple-600", category: "dev" },
   { name: "Cron 表达式", description: "解析 Cron 表达式，查看中文说明和执行时间", icon: "⏰", href: "/tools/cron-parser", color: "from-violet-500 to-indigo-600", category: "dev" },
   { name: "设备信息检测", description: "检测屏幕分辨率、浏览器信息、硬件配置", icon: "📱", href: "/tools/device-info", color: "from-indigo-500 to-purple-600", category: "dev" },
   { name: "子网掩码计算器", description: "IP 地址与子网在线计算，网络地址、广播地址、可用主机范围", icon: "🌐", href: "/tools/subnet-calculator", color: "from-green-500 to-emerald-600", category: "dev" },
+  { name: "cURL 转代码", description: "cURL 命令转 Python、JavaScript、Java、Go、PHP 代码", icon: "⌘", href: "/tools/curl-converter", color: "from-orange-500 to-red-600", category: "dev" },
+  { name: "JSON 转代码", description: "JSON 生成 TypeScript、Java、Go、C#、Python 类型定义", icon: "{ }", href: "/tools/json-to-code", color: "from-amber-500 to-orange-600", category: "dev" },
+  { name: "IP 地址查询", description: "查看公网 IP、地理位置、运营商信息，支持手动查询", icon: "📍", href: "/tools/ip-lookup", color: "from-blue-500 to-indigo-600", category: "dev" },
 
   // ── 技术速查 ──
   { name: "MySQL 速查手册", description: "MySQL 常用语句、函数、索引、权限操作速查", icon: "🐬", href: "/tools/mysql-cheatsheet", color: "from-blue-500 to-sky-600", category: "cheatsheet" },

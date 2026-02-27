@@ -36,6 +36,43 @@ body {
   color: var(--foreground);
 }
 
+/* ── Page headings ── */
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+@media (min-width: 640px) {
+  .page-title {
+    font-size: 1.875rem;
+  }
+}
+
+.page-subtitle {
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+/* ── Cards & inputs ── */
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.input {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--foreground);
+}
+
+.input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
 /* ── Tool cards ── */
 
 .tool-card {
