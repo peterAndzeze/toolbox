@@ -1,65 +1,137 @@
-import Image from "next/image";
+import Link from "next/link";
+
+const tools = [
+  {
+    name: "JSON 格式化",
+    description: "JSON 数据格式化、压缩、校验，支持语法高亮显示",
+    icon: "{ }",
+    href: "/tools/json-formatter",
+    color: "from-amber-500 to-orange-600",
+  },
+  {
+    name: "二维码生成器",
+    description: "输入文字或链接，即时生成二维码，支持下载保存",
+    icon: "▣",
+    href: "/tools/qrcode-generator",
+    color: "from-green-500 to-emerald-600",
+  },
+  {
+    name: "图片压缩",
+    description: "在线压缩图片大小，保持清晰度，支持批量处理",
+    icon: "🖼",
+    href: "/tools/image-compressor",
+    color: "from-blue-500 to-cyan-600",
+  },
+  {
+    name: "Markdown 编辑器",
+    description: "在线 Markdown 编辑与实时预览，支持导出 HTML",
+    icon: "M↓",
+    href: "/tools/markdown-editor",
+    color: "from-indigo-500 to-blue-600",
+  },
+  {
+    name: "密码生成器",
+    description: "生成安全随机密码，自定义长度和字符类型",
+    icon: "🔐",
+    href: "/tools/password-generator",
+    color: "from-red-500 to-pink-600",
+  },
+  {
+    name: "文本统计",
+    description: "统计文本字数、字符数、行数、段落数，支持中英文",
+    icon: "Aa",
+    href: "/tools/text-counter",
+    color: "from-purple-500 to-violet-600",
+  },
+  {
+    name: "颜色转换器",
+    description: "HEX、RGB、HSL 颜色格式互转，实时预览颜色",
+    icon: "🎨",
+    href: "/tools/color-converter",
+    color: "from-pink-500 to-rose-600",
+  },
+  {
+    name: "Base64 编解码",
+    description: "文本与 Base64 互转，支持中文 Unicode 字符",
+    icon: "B64",
+    href: "/tools/base64",
+    color: "from-teal-500 to-green-600",
+  },
+  {
+    name: "URL 编解码",
+    description: "URL 编码与解码转换，处理中文和特殊字符",
+    icon: "%",
+    href: "/tools/url-codec",
+    color: "from-sky-500 to-blue-600",
+  },
+  {
+    name: "时间戳转换",
+    description: "Unix 时间戳与日期时间互转，支持秒和毫秒",
+    icon: "⏱",
+    href: "/tools/timestamp",
+    color: "from-orange-500 to-red-600",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div>
+      <section className="py-12 text-center sm:py-20">
+        <h1 className="text-3xl font-bold tracking-tight sm:text-5xl">
+          免费在线工具箱
+        </h1>
+        <p className="mx-auto mt-4 max-w-xl text-base text-[var(--muted)] sm:text-lg">
+          无需下载安装，打开浏览器即可使用。所有工具完全免费，数据不上传服务器，保护你的隐私。
+        </p>
+        <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[var(--card-border)] bg-[var(--card-bg)] px-4 py-2 text-sm text-[var(--muted)]">
+          <span className="inline-block h-2 w-2 rounded-full bg-green-500"></span>
+          已上线 {tools.length} 个工具，持续更新中
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section id="tools" className="pb-16">
+        <h2 className="mb-8 text-xl font-semibold">全部工具</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {tools.map((tool) => (
+            <Link key={tool.href} href={tool.href} className="tool-card group rounded-xl p-6">
+              <div
+                className={`mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br ${tool.color} text-xl font-bold text-white`}
+              >
+                {tool.icon}
+              </div>
+              <h3 className="text-lg font-semibold group-hover:text-[var(--primary)]">
+                {tool.name}
+              </h3>
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                {tool.description}
+              </p>
+              <div className="mt-4 flex items-center text-sm font-medium text-[var(--primary)]">
+                立即使用
+                <span className="ml-1 transition-transform group-hover:translate-x-1">
+                  →
+                </span>
+              </div>
+            </Link>
+          ))}
         </div>
-      </main>
+      </section>
+
+      <section className="border-t border-[var(--card-border)] py-16">
+        <div className="grid gap-8 text-center sm:grid-cols-3">
+          <div>
+            <div className="text-3xl font-bold text-[var(--primary)]">100%</div>
+            <p className="mt-2 text-sm text-[var(--muted)]">完全免费使用</p>
+          </div>
+          <div>
+            <div className="text-3xl font-bold text-[var(--primary)]">0</div>
+            <p className="mt-2 text-sm text-[var(--muted)]">数据不上传服务器</p>
+          </div>
+          <div>
+            <div className="text-3xl font-bold text-[var(--primary)]">∞</div>
+            <p className="mt-2 text-sm text-[var(--muted)]">不限使用次数</p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
