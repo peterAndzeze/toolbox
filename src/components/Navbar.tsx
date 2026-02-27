@@ -50,7 +50,7 @@ export function Navbar() {
                 {categories.map((cat) => (
                   <Link
                     key={cat.id}
-                    href={`/#tools`}
+                    href={`/?category=${cat.id}#tools`}
                     onClick={() => setDropdownOpen(false)}
                     className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-[var(--background)]"
                   >
@@ -98,7 +98,7 @@ export function Navbar() {
             {categories.map((cat) => (
               <Link
                 key={cat.id}
-                href={`/#tools`}
+                href={`/?category=${cat.id}#tools`}
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center gap-3 py-2.5 text-sm"
               >
