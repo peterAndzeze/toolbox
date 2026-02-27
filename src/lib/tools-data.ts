@@ -52,6 +52,7 @@ export const tools: Tool[] = [
   { name: "进制转换器", description: "二进制、八进制、十进制、十六进制互相转换", icon: "0x", href: "/tools/number-base", color: "from-cyan-500 to-blue-600", category: "converter" },
   { name: "CSS 单位转换", description: "px、rem、em、vw、pt 等 CSS 单位互转", icon: "px", href: "/tools/css-unit", color: "from-rose-500 to-pink-600", category: "converter" },
   { name: "JSON-CSV 转换", description: "JSON 与 CSV 格式互相转换", icon: "⇄", href: "/tools/json-csv", color: "from-indigo-500 to-violet-600", category: "converter" },
+  { name: "数据速率换算", description: "带宽 Mbps/Gbps 与存储 MB/GB 单位互转，下载时间计算", icon: "📶", href: "/tools/data-rate-converter", color: "from-teal-500 to-cyan-600", category: "converter" },
 
   // ── 生成器 ──
   { name: "二维码生成器", description: "输入文字或链接，即时生成二维码，支持下载保存", icon: "▣", href: "/tools/qrcode-generator", color: "from-green-500 to-emerald-600", category: "generator" },
@@ -70,6 +71,7 @@ export const tools: Tool[] = [
   { name: "正则表达式测试", description: "实时测试正则表达式，高亮匹配结果，内置预设", icon: ".*", href: "/tools/regex-tester", color: "from-fuchsia-500 to-purple-600", category: "dev" },
   { name: "Cron 表达式", description: "解析 Cron 表达式，查看中文说明和执行时间", icon: "⏰", href: "/tools/cron-parser", color: "from-violet-500 to-indigo-600", category: "dev" },
   { name: "设备信息检测", description: "检测屏幕分辨率、浏览器信息、硬件配置", icon: "📱", href: "/tools/device-info", color: "from-indigo-500 to-purple-600", category: "dev" },
+  { name: "子网掩码计算器", description: "IP 地址与子网在线计算，网络地址、广播地址、可用主机范围", icon: "🌐", href: "/tools/subnet-calculator", color: "from-green-500 to-emerald-600", category: "dev" },
 
   // ── 技术速查 ──
   { name: "MySQL 速查手册", description: "MySQL 常用语句、函数、索引、权限操作速查", icon: "🐬", href: "/tools/mysql-cheatsheet", color: "from-blue-500 to-sky-600", category: "cheatsheet" },
