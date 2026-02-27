@@ -23,6 +23,7 @@ export const categories: Category[] = [
   { id: "media", name: "图片与文件", icon: "🖼", color: "from-cyan-500 to-blue-600" },
   { id: "dev", name: "开发辅助", icon: "🛠", color: "from-slate-500 to-zinc-600" },
   { id: "cheatsheet", name: "技术速查", icon: "📖", color: "from-amber-500 to-orange-600" },
+  { id: "life", name: "生活实用", icon: "🏠", color: "from-rose-500 to-red-600" },
 ];
 
 export const tools: Tool[] = [
@@ -75,6 +76,8 @@ export const tools: Tool[] = [
   { name: "PDF 工具箱", description: "PDF 合并、拆分、信息提取，本地处理", icon: "📄", href: "/tools/pdf-tools", color: "from-red-500 to-orange-600", category: "media" },
   { name: "图片格式转换", description: "PNG、JPG、WebP、BMP、GIF 格式互转，可调节压缩质量", icon: "🔄", href: "/tools/image-converter", color: "from-violet-500 to-purple-600", category: "media" },
   { name: "图片水印工具", description: "在线添加文字水印，支持自定义字号、颜色、透明度和平铺", icon: "💧", href: "/tools/image-watermark", color: "from-sky-500 to-blue-600", category: "media" },
+  { name: "九宫格切图", description: "一键将图片切成九宫格，适用于微信朋友圈和 Instagram", icon: "🔲", href: "/tools/grid-image", color: "from-pink-500 to-rose-600", category: "media" },
+  { name: "Favicon 生成器", description: "上传图片或输入文字生成网站图标，支持多种尺寸", icon: "🌟", href: "/tools/favicon-generator", color: "from-amber-500 to-yellow-600", category: "media" },
 
   // ── 开发辅助 ──
   { name: "正则表达式测试", description: "实时测试正则表达式，高亮匹配结果，内置预设", icon: ".*", href: "/tools/regex-tester", color: "from-fuchsia-500 to-purple-600", category: "dev" },
@@ -84,6 +87,13 @@ export const tools: Tool[] = [
   { name: "cURL 转代码", description: "cURL 命令转 Python、JavaScript、Java、Go、PHP 代码", icon: "⌘", href: "/tools/curl-converter", color: "from-orange-500 to-red-600", category: "dev" },
   { name: "JSON 转代码", description: "JSON 生成 TypeScript、Java、Go、C#、Python 类型定义", icon: "{ }", href: "/tools/json-to-code", color: "from-amber-500 to-orange-600", category: "dev" },
   { name: "IP 地址查询", description: "查看公网 IP、地理位置、运营商信息，支持手动查询", icon: "📍", href: "/tools/ip-lookup", color: "from-blue-500 to-indigo-600", category: "dev" },
+  { name: "CSS 渐变生成器", description: "可视化编辑线性渐变和径向渐变，实时预览，一键复制 CSS", icon: "🌈", href: "/tools/css-gradient", color: "from-pink-500 to-purple-600", category: "dev" },
+  { name: "CSS 阴影生成器", description: "可视化调节 Box Shadow 参数，支持多层阴影和内阴影", icon: "🔳", href: "/tools/css-shadow", color: "from-slate-500 to-gray-600", category: "dev" },
+  { name: "CSS 圆角生成器", description: "可视化调节 Border Radius，支持四角独立控制和高级语法", icon: "⬜", href: "/tools/css-radius", color: "from-cyan-500 to-teal-600", category: "dev" },
+  { name: "代码截图美化", description: "代码转精美图片，支持多语言语法高亮和自定义主题", icon: "📸", href: "/tools/code-snapshot", color: "from-violet-500 to-purple-600", category: "dev" },
+  { name: "SQL 转 Java 实体", description: "SQL 建表语句转 Java 类，支持 Lombok、JPA、MyBatis-Plus", icon: "☕", href: "/tools/sql-to-java", color: "from-orange-500 to-red-600", category: "dev" },
+  { name: "HTTP 请求测试", description: "在线 API 调试，支持 GET/POST/PUT/DELETE，查看响应数据", icon: "🔗", href: "/tools/http-tester", color: "from-green-500 to-emerald-600", category: "dev" },
+  { name: "占位图生成器", description: "自定义尺寸、颜色和文字，生成 PNG/SVG 占位符图片", icon: "🖼", href: "/tools/placeholder-image", color: "from-gray-500 to-slate-600", category: "dev" },
 
   // ── 技术速查 ──
   { name: "MySQL 速查手册", description: "MySQL 常用语句、函数、索引、权限操作速查", icon: "🐬", href: "/tools/mysql-cheatsheet", color: "from-blue-500 to-sky-600", category: "cheatsheet" },
@@ -96,6 +106,12 @@ export const tools: Tool[] = [
   { name: "Redis 命令速查", description: "Redis 数据结构、命令、事务、持久化操作速查", icon: "R", href: "/tools/redis-cheatsheet", color: "from-red-600 to-rose-600", category: "cheatsheet" },
   { name: "Spring Cloud 速查", description: "Nacos、Feign、Gateway、Sentinel 微服务组件配置", icon: "☁", href: "/tools/springcloud-cheatsheet", color: "from-emerald-500 to-green-600", category: "cheatsheet" },
   { name: "Kubernetes 命令速查", description: "kubectl 全命令速查，Pod、Deployment、Service、RBAC 等", icon: "⎈", href: "/tools/k8s-cheatsheet", color: "from-blue-500 to-indigo-600", category: "cheatsheet" },
+
+  // ── 生活实用 ──
+  { name: "房贷计算器", description: "等额本息/等额本金还款计算，查看月供和还款明细", icon: "🏠", href: "/tools/mortgage-calculator", color: "from-blue-500 to-indigo-600", category: "life" },
+  { name: "个税计算器", description: "2026 个人所得税计算，支持五险一金和专项附加扣除", icon: "💰", href: "/tools/tax-calculator", color: "from-emerald-500 to-green-600", category: "life" },
+  { name: "BMI 计算器", description: "身体质量指数在线计算，参考中国和 WHO 标准", icon: "⚖️", href: "/tools/bmi-calculator", color: "from-orange-500 to-amber-600", category: "life" },
+  { name: "年龄/日期计算器", description: "精确计算年龄、日期间隔、日期推算，显示生肖星座", icon: "📅", href: "/tools/date-calculator", color: "from-purple-500 to-violet-600", category: "life" },
 ];
 
 export function getToolByHref(href: string): Tool | undefined {
