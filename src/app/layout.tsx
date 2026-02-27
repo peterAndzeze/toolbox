@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
-import Script from "next/script";
 import { GoogleAnalytics, BaiduAnalytics } from "@/components/Analytics";
 import "./globals.css";
 
@@ -53,11 +52,10 @@ export default function RootLayout({
     <html lang="zh-CN">
       <head>
         {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && (
-          <Script
+          <script
             async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`}
             crossOrigin="anonymous"
-            strategy="afterInteractive"
           />
         )}
       </head>
