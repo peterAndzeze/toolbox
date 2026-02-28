@@ -3,18 +3,8 @@
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { tools, categories, getToolsByCategory, getToolByHref } from "@/lib/tools-data";
-
-const HOT_TOOLS = [
-  "/tools/json-formatter",
-  "/tools/mortgage-calculator",
-  "/tools/tax-calculator",
-  "/tools/base64",
-  "/tools/timestamp",
-  "/tools/image-compressor",
-  "/tools/password-generator",
-  "/tools/bmi-calculator",
-];
+import { tools, categories, getToolsByCategory, getToolByHref, type Tool } from "@/lib/tools-data";
+import { getLunarDate, getSolarTermForDate, getYiJi, getChineseHoliday } from "@/lib/lunar";
 
 const NEW_TOOLS = [
   "/tools/currency-converter",
@@ -33,7 +23,7 @@ const NEW_TOOLS = [
   "/tools/http-tester",
 ];
 
-const QUICK_TAGS = ["JSON", "Base64", "加密", "图片", "计算器", "CSS", "密码", "SQL", "时间戳", "二维码"];
+const WEEKDAY_NAMES = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
 
 export default function Home() {
   return (
@@ -78,35 +68,39 @@ function HomeContent() {
 
   const isGrouped = !search.trim() && activeCategory === "all";
 
-  const hotTools = useMemo(() =>
-    HOT_TOOLS.map((href) => tools.find((t) => t.href === href)).filter(Boolean) as typeof tools,
-    []
-  );
+  const personalTools = useMemo(() => {
+    const seen = new Set<string>();
+    const result: { tool: Tool; type: "fav" | "recent" }[] = [];
+    for (const h of favHrefs) {
+      const t = getToolByHref(h);
+      if (t && !seen.has(h)) { seen.add(h); result.push({ tool: t, type: "fav" }); }
+    }
+    for (const h of recentHrefs.slice(0, 8)) {
+      const t = getToolByHref(h);
+      if (t && !seen.has(h)) { seen.add(h); result.push({ tool: t, type: "recent" }); }
+    }
+    return result;
+  }, [favHrefs, recentHrefs]);
 
-  const favTools = useMemo(() =>
-    favHrefs.map((h) => getToolByHref(h)).filter(Boolean) as typeof tools,
-    [favHrefs]
-  );
-
-  const recentTools = useMemo(() =>
-    recentHrefs.slice(0, 6).map((h) => getToolByHref(h)).filter(Boolean) as typeof tools,
-    [recentHrefs]
-  );
+  const today = useMemo(() => {
+    const now = new Date();
+    const y = now.getFullYear(), m = now.getMonth() + 1, d = now.getDate();
+    const lunar = getLunarDate(y, m, d);
+    const solarTerm = getSolarTermForDate(y, m, d);
+    const { yi, ji } = getYiJi(y, m, d);
+    const holiday = getChineseHoliday(y, m, d);
+    return { year: y, month: m, day: d, weekday: WEEKDAY_NAMES[now.getDay()], lunar, solarTerm, yi, ji, holiday };
+  }, []);
 
   return (
     <div>
-      {/* Hero */}
-      <section className="hero-section py-10 text-center sm:py-16">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-5xl">
-          免费在线工具箱
-        </h1>
-        <p className="mx-auto mt-4 max-w-xl text-base text-[var(--muted)] sm:text-lg">
-          无需下载安装，打开浏览器即可使用。所有工具完全免费，数据不上传服务器，保护你的隐私。
+      {/* Search */}
+      <section className="pb-6 pt-2 sm:pt-4">
+        <p className="mb-4 text-center text-sm text-[var(--muted)]">
+          {tools.length} 个免费工具，打开即用，数据不上传服务器
         </p>
-
-        {/* Search */}
-        <div className="mx-auto mt-8 max-w-lg">
-          <div className="search-box flex items-center gap-3 rounded-xl px-4 py-3">
+        <div className="mx-auto max-w-xl">
+          <div className="search-box flex items-center gap-3 rounded-2xl px-5 py-3.5">
             <svg className="h-5 w-5 shrink-0 text-[var(--muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
             </svg>
@@ -114,8 +108,8 @@ function HomeContent() {
               type="text"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setActiveCategory("all"); }}
-              placeholder="搜索工具，如 JSON、Base64、房贷计算器..."
-              className="w-full bg-transparent text-sm outline-none placeholder:text-[var(--muted)]"
+              placeholder="搜索工具... JSON、房贷、时间戳、图片压缩"
+              className="w-full bg-transparent outline-none placeholder:text-[var(--muted)]"
             />
             {search && (
               <button onClick={() => setSearch("")} className="shrink-0 text-[var(--muted)] hover:text-[var(--foreground)]">
@@ -126,127 +120,106 @@ function HomeContent() {
             )}
           </div>
         </div>
-
-        {/* Quick Tags */}
-        <div className="mx-auto mt-4 flex max-w-lg flex-wrap justify-center gap-2">
-          {QUICK_TAGS.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => { setSearch(tag); setActiveCategory("all"); }}
-              className="quick-tag rounded-full px-3 py-1 text-xs"
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
-
-        <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[var(--card-border)] bg-[var(--card-bg)] px-4 py-1.5 text-sm text-[var(--muted)]">
-          <span className="inline-block h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-          已上线 {tools.length} 个工具，持续更新中
-        </div>
       </section>
 
-      {/* Favorites */}
-      {isGrouped && favTools.length > 0 && (
-        <section className="mb-10">
-          <div className="mb-4 flex items-center gap-2">
-            <span className="text-xl">❤️</span>
-            <h2 className="text-lg font-semibold">我的收藏</h2>
-            <span className="text-sm text-[var(--muted)]">({favTools.length})</span>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {favTools.map((t) => (
-              <Link key={t.href} href={t.href} className="hot-tool-card group flex items-center gap-3 rounded-xl p-4">
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${t.color} text-base font-bold text-white`}>
-                  {t.icon}
-                </div>
-                <div className="min-w-0">
-                  <h3 className="truncate text-sm font-semibold group-hover:text-[var(--primary)]">{t.name}</h3>
-                  <p className="truncate text-xs text-[var(--muted)]">{t.description}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Recent tools */}
-      {isGrouped && recentTools.length > 0 && (
-        <section className="mb-10">
-          <div className="mb-4 flex items-center gap-2">
-            <span className="text-xl">🕐</span>
-            <h2 className="text-lg font-semibold">最近使用</h2>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {recentTools.map((t) => (
-              <Link key={t.href} href={t.href} className="hot-tool-card group flex items-center gap-3 rounded-xl p-4">
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${t.color} text-base font-bold text-white`}>
-                  {t.icon}
-                </div>
-                <div className="min-w-0">
-                  <h3 className="truncate text-sm font-semibold group-hover:text-[var(--primary)]">{t.name}</h3>
-                  <p className="truncate text-xs text-[var(--muted)]">{t.description}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Hot Tools */}
+      {/* Dashboard: Today + Personal */}
       {isGrouped && (
-        <section className="mb-10">
-          <div className="mb-4 flex items-center gap-2">
-            <span className="text-xl">🔥</span>
-            <h2 className="text-lg font-semibold">热门推荐</h2>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {hotTools.map((tool) => (
-              <Link key={tool.href} href={tool.href} className="hot-tool-card group flex items-center gap-3 rounded-xl p-4">
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${tool.color} text-base font-bold text-white`}>
-                  {tool.icon}
-                </div>
-                <div className="min-w-0">
-                  <h3 className="truncate text-sm font-semibold group-hover:text-[var(--primary)]">{tool.name}</h3>
-                  <p className="truncate text-xs text-[var(--muted)]">{tool.description}</p>
-                </div>
+        <section className="mb-8 grid gap-4 lg:grid-cols-5">
+          {/* Today widget */}
+          <div className="card rounded-2xl p-5 lg:col-span-3">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">📆</span>
+                <span className="font-semibold">今日</span>
+                {(today.holiday || today.solarTerm) && (
+                  <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+                    {today.holiday || today.solarTerm}
+                  </span>
+                )}
+              </div>
+              <Link href="/tools/calendar" className="text-xs text-[var(--primary)] hover:underline">
+                完整万年历 →
               </Link>
-            ))}
+            </div>
+            <div className="flex items-start gap-5">
+              <div className="shrink-0 text-center">
+                <div className="text-4xl font-bold leading-none">{today.day}</div>
+                <div className="mt-1 text-xs text-[var(--muted)]">{today.month}月 · {today.weekday}</div>
+              </div>
+              <div className="min-w-0 flex-1">
+                {today.lunar && (
+                  <div className="mb-2 text-sm">
+                    <span className="font-medium">{today.lunar.monthName}{today.lunar.dayName}</span>
+                    <span className="ml-2 text-[var(--muted)]">{today.lunar.ganZhiYear}年 · {today.lunar.animal}</span>
+                  </div>
+                )}
+                <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs">
+                  <div>
+                    <span className="font-medium text-green-600 dark:text-green-400">宜</span>
+                    <span className="ml-1.5 text-[var(--muted)]">{today.yi.slice(0, 5).join(" · ")}</span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-red-500 dark:text-red-400">忌</span>
+                    <span className="ml-1.5 text-[var(--muted)]">{today.ji.slice(0, 4).join(" · ")}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Personal: favorites + recent */}
+          <div className="card rounded-2xl p-5 lg:col-span-2">
+            <div className="mb-3 flex items-center gap-2">
+              <span className="text-lg">{personalTools.some((p) => p.type === "fav") ? "❤️" : "🕐"}</span>
+              <span className="font-semibold">{personalTools.some((p) => p.type === "fav") ? "收藏与最近" : "最近使用"}</span>
+            </div>
+            {personalTools.length > 0 ? (
+              <div className="space-y-1">
+                {personalTools.slice(0, 5).map(({ tool: t, type }) => (
+                  <Link key={t.href} href={t.href} className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-[var(--background)]">
+                    <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-gradient-to-br ${t.color} text-[10px] font-bold text-white`}>
+                      {t.icon}
+                    </div>
+                    <span className="truncate text-sm">{t.name}</span>
+                    {type === "fav" && <span className="ml-auto text-xs text-red-400">♥</span>}
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="flex h-28 items-center justify-center text-sm text-[var(--muted)]">
+                使用工具后会在这里显示
+              </div>
+            )}
           </div>
         </section>
       )}
 
-      {/* Category Tabs */}
-      <section className="mb-8">
-        <div className="category-tabs flex gap-2 overflow-x-auto pb-2">
+      {/* Category chips */}
+      <section className="mb-6">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => { setActiveCategory("all"); setSearch(""); }}
-            className={`category-tab ${activeCategory === "all" && !search ? "active" : ""}`}
+            className={`cat-chip ${activeCategory === "all" && !search ? "active" : ""}`}
           >
             全部
-            <span className="tab-count">{tools.length}</span>
           </button>
-          {categories.map((cat) => {
-            const count = getToolsByCategory(cat.id).length;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => { setActiveCategory(cat.id); setSearch(""); }}
-                className={`category-tab ${activeCategory === cat.id && !search ? "active" : ""}`}
-              >
-                <span>{cat.icon}</span>
-                {cat.name}
-                <span className="tab-count">{count}</span>
-              </button>
-            );
-          })}
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => { setActiveCategory(cat.id); setSearch(""); }}
+              className={`cat-chip ${activeCategory === cat.id && !search ? "active" : ""}`}
+            >
+              <span>{cat.icon}</span>
+              {cat.name}
+            </button>
+          ))}
         </div>
       </section>
 
       {/* Tools */}
-      <section id="tools" className="pb-16">
+      <section id="tools" className="pb-12">
         {search.trim() && (
-          <p className="mb-6 text-sm text-[var(--muted)]">
+          <p className="mb-4 text-sm text-[var(--muted)]">
             搜索「{search}」找到 {filteredTools?.length || 0} 个工具
           </p>
         )}
@@ -256,13 +229,13 @@ function HomeContent() {
             const catTools = getToolsByCategory(cat.id);
             if (catTools.length === 0) return null;
             return (
-              <div key={cat.id} className="mb-10">
-                <div className="mb-4 flex items-center gap-2">
-                  <span className="text-xl">{cat.icon}</span>
-                  <h2 className="text-lg font-semibold">{cat.name}</h2>
-                  <span className="text-sm text-[var(--muted)]">({catTools.length})</span>
+              <div key={cat.id} className="mb-8">
+                <div className="mb-3 flex items-center gap-2">
+                  <span>{cat.icon}</span>
+                  <h2 className="text-sm font-semibold">{cat.name}</h2>
+                  <span className="text-xs text-[var(--muted)]">{catTools.length}</span>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
                   {catTools.map((tool) => (
                     <ToolCard key={tool.href} tool={tool} />
                   ))}
@@ -271,7 +244,7 @@ function HomeContent() {
             );
           })
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
             {(filteredTools || []).map((tool) => (
               <ToolCard key={tool.href} tool={tool} />
             ))}
@@ -279,9 +252,9 @@ function HomeContent() {
         )}
 
         {filteredTools?.length === 0 && (
-          <div className="py-20 text-center">
-            <p className="text-4xl">🔍</p>
-            <p className="mt-4 text-[var(--muted)]">没有找到相关工具</p>
+          <div className="py-16 text-center">
+            <p className="text-3xl">🔍</p>
+            <p className="mt-3 text-sm text-[var(--muted)]">没有找到相关工具</p>
             <button onClick={() => { setSearch(""); setActiveCategory("all"); }} className="mt-2 text-sm text-[var(--primary)] hover:underline">
               清除搜索
             </button>
@@ -289,71 +262,34 @@ function HomeContent() {
         )}
       </section>
 
-      {/* Features */}
-      <section className="border-t border-[var(--card-border)] py-16">
-        <div className="mb-10 text-center">
-          <h2 className="text-2xl font-bold">为什么选择我们？</h2>
-          <p className="mt-2 text-[var(--muted)]">简单、安全、免费的在线工具集合</p>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="feature-card rounded-xl p-6 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-2xl dark:bg-green-900/30">💯</div>
-            <h3 className="font-semibold">完全免费</h3>
-            <p className="mt-1 text-sm text-[var(--muted)]">所有工具永久免费，无需注册登录</p>
-          </div>
-          <div className="feature-card rounded-xl p-6 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-2xl dark:bg-blue-900/30">🔒</div>
-            <h3 className="font-semibold">隐私安全</h3>
-            <p className="mt-1 text-sm text-[var(--muted)]">数据在浏览器本地处理，不上传服务器</p>
-          </div>
-          <div className="feature-card rounded-xl p-6 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 text-2xl dark:bg-purple-900/30">⚡</div>
-            <h3 className="font-semibold">即开即用</h3>
-            <p className="mt-1 text-sm text-[var(--muted)]">无需下载安装，打开浏览器直接使用</p>
-          </div>
-          <div className="feature-card rounded-xl p-6 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-orange-100 text-2xl dark:bg-orange-900/30">📱</div>
-            <h3 className="font-semibold">全设备适配</h3>
-            <p className="mt-1 text-sm text-[var(--muted)]">电脑、平板、手机均可完美使用</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer SEO */}
-      <section className="border-t border-[var(--card-border)] py-10">
-        <div className="text-center text-sm text-[var(--muted)]">
-          <p>速用工具箱 — 开发者和日常使用的在线工具集合</p>
-          <p className="mt-2">
-            涵盖编码解码、格式化、文本处理、转换工具、生成器、图片处理、开发辅助、技术速查、生活实用等 {categories.length} 大类 {tools.length} 个工具
-          </p>
-          <div className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs">
-            {categories.map((cat) => (
-              <Link key={cat.id} href={`/?category=${cat.id}#tools`} className="hover:text-[var(--primary)]">
-                {cat.icon} {cat.name}
-              </Link>
-            ))}
-          </div>
+      {/* SEO footer */}
+      <section className="border-t border-[var(--card-border)] py-8 text-center text-xs text-[var(--muted)]">
+        <p>速用工具箱 — {categories.length} 大类 {tools.length} 个免费在线工具，数据本地处理，隐私安全</p>
+        <div className="mt-3 flex flex-wrap justify-center gap-x-3 gap-y-1">
+          {categories.map((cat) => (
+            <Link key={cat.id} href={`/?category=${cat.id}#tools`} className="hover:text-[var(--primary)]">
+              {cat.icon} {cat.name}
+            </Link>
+          ))}
         </div>
       </section>
     </div>
   );
 }
 
-function ToolCard({ tool }: { tool: (typeof tools)[number] }) {
+function ToolCard({ tool }: { tool: Tool }) {
   const isNew = NEW_TOOLS.includes(tool.href);
   return (
-    <Link href={tool.href} className="tool-card group rounded-xl p-5">
-      <div className="mb-3 flex items-center gap-3">
-        <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${tool.color} text-lg font-bold text-white`}>
-          {tool.icon}
-        </div>
-        {isNew && <span className="new-badge rounded-full px-2 py-0.5 text-[10px] font-semibold">NEW</span>}
+    <Link href={tool.href} className="tool-card group flex items-start gap-3 rounded-xl p-3.5">
+      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${tool.color} text-sm font-bold text-white`}>
+        {tool.icon}
       </div>
-      <h3 className="text-base font-semibold group-hover:text-[var(--primary)]">{tool.name}</h3>
-      <p className="mt-1.5 text-sm leading-relaxed text-[var(--muted)]">{tool.description}</p>
-      <div className="mt-3 flex items-center text-sm font-medium text-[var(--primary)]">
-        立即使用
-        <span className="ml-1 transition-transform group-hover:translate-x-1">→</span>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          <h3 className="truncate text-sm font-semibold group-hover:text-[var(--primary)]">{tool.name}</h3>
+          {isNew && <span className="new-badge shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-semibold leading-none">NEW</span>}
+        </div>
+        <p className="mt-0.5 line-clamp-1 text-xs leading-relaxed text-[var(--muted)]">{tool.description}</p>
       </div>
     </Link>
   );
