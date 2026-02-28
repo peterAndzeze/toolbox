@@ -101,8 +101,12 @@ const N_STR1 = ["日", "一", "二", "三", "四", "五", "六", "七", "八", "
 const N_STR2 = ["初", "十", "廿", "卅"];
 const N_STR3 = ["正", "二", "三", "四", "五", "六", "七", "八", "九", "十", "冬", "腊"];
 
-const YI_LIST = ["嫁娶", "祭祀", "祈福", "开光", "出行", "移徙", "入宅", "动土", "安葬", "开市", "交易", "立券", "纳财", "订盟", "纳采", "修造", "上梁", "竖柱", "安门", "安床", "栽种", "破土", "启攒"];
-const JI_LIST = ["嫁娶", "开市", "动土", "破土", "安葬", "开仓", "伐木", "作梁", "词讼", "移徙", "远行"];
+const ALL_EVENTS = [
+  "嫁娶", "祭祀", "祈福", "开光", "出行", "移徙", "入宅", "动土", "安葬",
+  "开市", "交易", "立券", "纳财", "订盟", "纳采", "修造", "上梁", "竖柱",
+  "安门", "安床", "栽种", "破土", "启攒", "开仓", "伐木", "作梁", "词讼",
+  "远行", "解除", "沐浴", "裁衣", "冠笄", "求嗣", "安香", "塑绘",
+];
 
 function lYearDays(y: number): number {
   let sum = 348;
@@ -246,14 +250,12 @@ function getSolarTermForDate(year: number, month: number, day: number): string |
 function getYiJi(year: number, month: number, day: number): { yi: string[]; ji: string[] } {
   const seed = year * 10000 + month * 100 + day;
   const hash = (x: number) => ((seed * 31 + x * 17) % 1000) / 1000;
-  const yiCount = Math.min(4 + Math.floor(hash(1) * 3), YI_LIST.length);
-  const jiCount = Math.min(2 + Math.floor(hash(2) * 2), JI_LIST.length);
-  const yiOrder = YI_LIST.map((_, i) => i).sort((a, b) => hash(a) - hash(b));
-  const jiOrder = JI_LIST.map((_, i) => i).sort((a, b) => hash(a + 100) - hash(b + 100));
-  return {
-    yi: yiOrder.slice(0, yiCount).map((i) => YI_LIST[i]),
-    ji: jiOrder.slice(0, jiCount).map((i) => JI_LIST[i]),
-  };
+  const shuffled = ALL_EVENTS.map((_, i) => i).sort((a, b) => hash(a * 7 + 3) - hash(b * 7 + 3));
+  const yiCount = 4 + Math.floor(hash(1) * 4);
+  const jiCount = 3 + Math.floor(hash(2) * 3);
+  const yi = shuffled.slice(0, yiCount).map((i) => ALL_EVENTS[i]);
+  const ji = shuffled.slice(yiCount, yiCount + jiCount).map((i) => ALL_EVENTS[i]);
+  return { yi, ji };
 }
 
 function getChineseHoliday(year: number, month: number, day: number): string | null {

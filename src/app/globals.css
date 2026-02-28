@@ -156,6 +156,17 @@ body {
   color: white;
 }
 
+.stock-chip {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.stock-chip:hover {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 6%, var(--card-bg));
+}
+
 /* Keep legacy class for Navbar compatibility */
 .category-tab {
   display: inline-flex;
